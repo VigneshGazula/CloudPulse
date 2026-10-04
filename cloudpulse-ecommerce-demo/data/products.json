@@ -1,0 +1,74 @@
+[
+  {
+    "id": 1,
+    "name": "CloudPulse Apex Runner",
+    "price": 149.99,
+    "imageUrl": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=800&q=80",
+    "description": "Ultra-responsive cushioning with breathable mesh upper. Designed for all-day urban agility and high performance.",
+    "category": "Running"
+  },
+  {
+    "id": 2,
+    "name": "Retro Court Minimalist",
+    "price": 129.50,
+    "imageUrl": "https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&w=800&q=80",
+    "description": "Clean, understated court silhouette crafted from buttery Italian leather with vulcanized gum sole.",
+    "category": "Sneakers"
+  },
+  {
+    "id": 3,
+    "name": "Amber Suede Chelsea Boot",
+    "price": 189.00,
+    "imageUrl": "https://images.unsplash.com/photo-1608256246200-53e635b5b65f?auto=format&fit=crop&w=800&q=80",
+    "description": "Hand-stitched premium water-resistant suede with ergonomic elastic side gussets and Goodyear welt.",
+    "category": "Boots"
+  },
+  {
+    "id": 4,
+    "name": "Veloce Air Stride 02",
+    "price": 165.00,
+    "imageUrl": "https://images.unsplash.com/photo-1551107696-a4b0c5a0d9a2?auto=format&fit=crop&w=800&q=80",
+    "description": "Engineered knit mesh upper paired with high-rebound nitrogen-infused foam sole for marathon comfort.",
+    "category": "Running"
+  },
+  {
+    "id": 5,
+    "name": "Mono Horizon Low-Top",
+    "price": 115.00,
+    "imageUrl": "https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?auto=format&fit=crop&w=800&q=80",
+    "description": "Timeless skate-inspired low-top with reinforced canvas, contrast stitching, and memory-foam insole.",
+    "category": "Casual"
+  },
+  {
+    "id": 6,
+    "name": "Artisan Leather Penny Loafer",
+    "price": 210.00,
+    "imageUrl": "https://images.unsplash.com/photo-1533867617858-e7b97e060509?auto=format&fit=crop&w=800&q=80",
+    "description": "Polished calfskin leather with traditional moc-toe stitching and stacked leather heel. Effortlessly elevated.",
+    "category": "Loafers"
+  },
+  {
+    "id": 7,
+    "name": "TrailMaster All-Weather Hiker",
+    "price": 195.00,
+    "imageUrl": "https://images.unsplash.com/photo-1520639888713-7851133b1ed0?auto=format&fit=crop&w=800&q=80",
+    "description": "Vibram-lugged outsole with waterproof breathable membrane. Built for rugged trails and city winters.",
+    "category": "Boots"
+  },
+  {
+    "id": 8,
+    "name": "Aero Glide Knit Slip-On",
+    "price": 98.00,
+    "imageUrl": "https://images.unsplash.com/photo-1560769629-975ec94e6a86?auto=format&fit=crop&w=800&q=80",
+    "description": "Weightless slip-on sock sneaker engineered with recycled stretch yarn and shock-absorbing outsole.",
+    "category": "Sneakers"
+  },
+  {
+    "id": 9,
+    "name": "Oxford Heritage Brogue",
+    "price": 225.00,
+    "imageUrl": "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?auto=format&fit=crop&w=800&q=80",
+    "description": "Hand-burnished cognac leather with wingtip perforations. Refined formal footwear built to last decades.",
+    "category": "Casual"
+  }
+]

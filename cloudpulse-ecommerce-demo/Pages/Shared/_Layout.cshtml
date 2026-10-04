@@ -1,0 +1,424 @@
+@inject cloudpulse_ecommerce_demo.Services.ICartService CartService
+@{
+    int dynamicCartCount = 0;
+    try { dynamicCartCount = await CartService.GetCartCountAsync(); } catch { }
+}
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CLOUDPULSE</title>
+    <meta name="description" content="CLOUDPULSE - Precision-crafted performance footwear, luxury sneakers, and urban boots." />
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet" />
+
+    <!-- Tailwind CSS with Custom Design System -->
+    <link rel="stylesheet" href="~/css/app.css" asp-append-version="true" />
+</head>
+<body class="min-h-full flex flex-col bg-background text-foreground antialiased selection:bg-primary/20 selection:text-primary">
+    <!-- Announcement Bar -->
+    <div class="bg-primary text-white text-xs sm:text-sm font-semibold py-2 px-4 text-center transition-colors shadow-2xs">
+        <div class="max-w-7xl mx-auto flex items-center justify-center gap-2">
+            <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
+            <span>⚡ Pulse Exclusive: Enjoy complimentary express delivery on footwear orders over $75 with code <span class="font-bold underline decoration-white/70">PULSE26</span></span>
+        </div>
+    </div>
+
+    <!-- Sticky Header -->
+    <header id="main-header" class="sticky top-0 z-50 w-full transition-all duration-300 header-top border-b border-border/40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 sm:h-20 gap-4">
+                
+                <!-- Left: Mobile Hamburger & Logo -->
+                <div class="flex items-center gap-3 lg:gap-8">
+                    <!-- Mobile Hamburger Button -->
+                    <button type="button" 
+                            id="mobile-menu-toggle"
+                            class="md:hidden p-2 rounded-custom-sm text-foreground/80 hover:text-foreground hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary/40 transition-colors"
+                            aria-expanded="false" 
+                            aria-label="Toggle navigation menu">
+                        <!-- Hamburger SVG -->
+                        <svg id="hamburger-icon" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="4" x2="20" y1="12" y2="12"/>
+                            <line x1="4" x2="20" y1="6" y2="6"/>
+                            <line x1="4" x2="20" y1="18" y2="18"/>
+                        </svg>
+                        <!-- Close 'X' SVG -->
+                        <svg id="close-icon" class="w-6 h-6 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 6 6 18"/>
+                            <path d="m6 6 12 12"/>
+                        </svg>
+                    </button>
+
+                    <!-- "CLOUDPULSE" Logo -->
+                    <a asp-area="" asp-page="/Index" class="flex items-center gap-2.5 group focus:outline-none">
+                        <div class="w-9 h-9 rounded-custom-sm bg-primary/10 text-primary flex items-center justify-center group-hover:scale-105 transition-transform">
+                            <!-- Footwear / Dynamic Pulse Emblem SVG -->
+                            <svg class="w-5 h-5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 14l5-5 4 4 7-7" />
+                                <path d="M2 18h20" />
+                            </svg>
+                        </div>
+                        <span class="text-xl sm:text-2xl font-extrabold tracking-tight text-foreground">
+                            CLOUD<span class="text-primary font-black">PULSE</span>
+                        </span>
+                    </a>
+
+                    <!-- Desktop Navigation Links -->
+                    <nav class="hidden md:flex items-center gap-1 lg:gap-2">
+                        <a asp-page="/Index" class="px-3 py-2 text-sm font-medium rounded-custom-sm text-foreground/80 hover:text-foreground hover:bg-muted/70 transition-colors">All Footwear</a>
+                        <a href="/?category=Running" class="px-3 py-2 text-sm font-medium rounded-custom-sm text-foreground/80 hover:text-foreground hover:bg-muted/70 transition-colors">Running</a>
+                        <a href="/?category=Sneakers" class="px-3 py-2 text-sm font-medium rounded-custom-sm text-foreground/80 hover:text-foreground hover:bg-muted/70 transition-colors">Sneakers</a>
+                        <a href="/?category=Boots" class="px-3 py-2 text-sm font-medium rounded-custom-sm text-foreground/80 hover:text-foreground hover:bg-muted/70 transition-colors">Boots</a>
+                        <a href="/?category=Loafers" class="px-3 py-2 text-sm font-medium rounded-custom-sm text-foreground/80 hover:text-foreground hover:bg-muted/70 transition-colors">Loafers</a>
+                        <a href="/?category=Casual" class="px-3 py-2 text-sm font-medium rounded-custom-sm text-foreground/80 hover:text-foreground hover:bg-muted/70 transition-colors">Casual</a>
+                        <a href="/contact" class="px-3 py-2 text-sm font-medium rounded-custom-sm text-foreground/80 hover:text-foreground hover:bg-muted/70 transition-colors">Contact</a>
+                    </nav>
+                </div>
+
+                <!-- Center: Desktop Search Bar -->
+                <div class="hidden lg:flex flex-1 max-w-md mx-4">
+                    <form method="get" action="/" class="relative w-full">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-muted-foreground">
+                            <!-- Search SVG -->
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"/>
+                                <path d="m21 21-4.3-4.3"/>
+                            </svg>
+                        </div>
+                        <input type="text"
+                               name="q"
+                               id="desktop-search-input"
+                               placeholder="Search sneakers, runners, boots, loafers..."
+                               class="w-full pl-10 pr-12 py-2 text-sm bg-muted/60 border border-border/80 rounded-custom-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all placeholder:text-muted-foreground text-foreground" />
+                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                            <kbd class="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-semibold text-muted-foreground bg-background border border-border rounded shadow-2xs">⌘K</kbd>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Right: Actions (Theme Toggle, Cart, Sign In / Sign Up) -->
+                <div class="flex items-center gap-2 sm:gap-3">
+                    
+                    <!-- Dark/Light Mode Switcher -->
+                    <button type="button" 
+                            class="theme-toggle-btn p-2 rounded-custom-sm text-foreground/80 hover:text-foreground hover:bg-muted transition-colors focus:outline-none focus:ring-2 focus:ring-primary/40"
+                            title="Toggle color theme"
+                            aria-label="Toggle color theme">
+                        <!-- Sun icon (for dark mode) -->
+                        <svg class="w-5 h-5 hidden dark:block text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="4"/>
+                            <path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>
+                        </svg>
+                        <!-- Moon icon (for light mode) -->
+                        <svg class="w-5 h-5 block dark:hidden text-foreground/80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+                        </svg>
+                    </button>
+
+                    <!-- Cart Icon with Item-Count Badge -->
+                    <a href="/cart" 
+                       class="relative p-2 rounded-custom-sm text-foreground/80 hover:text-foreground hover:bg-muted transition-colors focus:outline-none focus:ring-2 focus:ring-primary/40 group"
+                       aria-label="Shopping Cart (@dynamicCartCount items)">
+                        <!-- Shopping Bag SVG -->
+                        <svg class="w-5 h-5 sm:w-6 sm:h-6 group-hover:scale-105 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
+                            <path d="M3 6h18"/>
+                            <path d="M16 10a4 4 0 0 1-8 0"/>
+                        </svg>
+                        <!-- Item Count Badge -->
+                        <span class="cart-badge absolute -top-1 -right-1 flex items-center justify-center min-w-[20px] h-5 px-1 text-[11px] font-bold text-white bg-primary rounded-full ring-2 ring-background shadow-xs transition-transform">
+                            @dynamicCartCount
+                        </span>
+                    </a>
+
+                    <!-- User Account / Auth Buttons -->
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <div class="hidden sm:flex items-center gap-2">
+                            <div class="flex items-center gap-2 px-3 py-1.5 bg-muted/80 rounded-custom-sm text-foreground text-sm font-medium border border-border/60">
+                                <svg class="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                                    <circle cx="12" cy="7" r="4"/>
+                                </svg>
+                                <span class="max-w-[120px] truncate">@User.Identity.Name</span>
+                            </div>
+                            <form method="post" asp-page="/Account/Logout" class="inline">
+                                <button type="submit" class="px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-muted/80 rounded-custom-sm border border-border/50 transition-colors">
+                                    Sign Out
+                                </button>
+                            </form>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="hidden sm:flex items-center gap-2">
+                            <a href="/Account/Login" 
+                               class="px-3.5 py-2 text-sm font-medium text-foreground/80 hover:text-foreground hover:bg-muted/80 rounded-custom-sm transition-colors">
+                                Sign In
+                            </a>
+                            <a href="/Account/Register" 
+                               class="px-4 py-2 text-sm font-semibold text-white bg-primary hover:opacity-90 active:scale-95 rounded-custom-sm shadow-sm transition-all">
+                                Sign Up
+                            </a>
+                        </div>
+                    }
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu Drawer -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-border/80 bg-background/95 backdrop-blur-md px-4 pt-3 pb-6 transition-all duration-200">
+            <!-- Mobile Search Bar -->
+            <div class="mb-4">
+                <form method="get" action="/" class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted-foreground">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"/>
+                            <path d="m21 21-4.3-4.3"/>
+                        </svg>
+                    </div>
+                    <input type="text"
+                           name="q"
+                           placeholder="Search sneakers, runners, boots..."
+                           class="w-full pl-9 pr-4 py-2 text-sm bg-muted/60 border border-border rounded-custom-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground" />
+                </form>
+            </div>
+
+            <!-- Mobile Navigation Links -->
+            <nav class="flex flex-col space-y-1">
+                <a asp-page="/Index" class="px-3 py-2.5 rounded-custom-sm text-base font-medium text-foreground hover:bg-muted transition-colors">All Footwear</a>
+                <a href="/?category=Running" class="px-3 py-2.5 rounded-custom-sm text-base font-medium text-foreground hover:bg-muted transition-colors">Running Collection</a>
+                <a href="/?category=Sneakers" class="px-3 py-2.5 rounded-custom-sm text-base font-medium text-foreground hover:bg-muted transition-colors">Urban Sneakers</a>
+                <a href="/?category=Boots" class="px-3 py-2.5 rounded-custom-sm text-base font-medium text-foreground hover:bg-muted transition-colors">Chelsea & Ankle Boots</a>
+                <a href="/?category=Loafers" class="px-3 py-2.5 rounded-custom-sm text-base font-medium text-foreground hover:bg-muted transition-colors">Handcrafted Loafers</a>
+                <a href="/?category=Casual" class="px-3 py-2.5 rounded-custom-sm text-base font-medium text-foreground hover:bg-muted transition-colors">Casual Walking Shoes</a>
+                <a href="/contact" class="px-3 py-2.5 rounded-custom-sm text-base font-medium text-foreground hover:bg-muted transition-colors">Contact Concierge</a>
+            </nav>
+
+            <!-- Mobile Auth Buttons -->
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <div class="pt-4 mt-3 border-t border-border flex flex-col gap-2">
+                    <div class="flex items-center gap-2 px-3 py-2 bg-muted/80 rounded-custom-sm text-foreground text-sm font-medium border border-border/60">
+                        <svg class="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                        <span>Signed in as <strong>@User.Identity.Name</strong></span>
+                    </div>
+                    <form method="post" asp-page="/Account/Logout" class="w-full">
+                        <button type="submit" class="w-full py-2.5 text-center text-sm font-medium text-destructive hover:bg-destructive/10 rounded-custom-sm border border-destructive/20 transition-colors">
+                            Sign Out
+                        </button>
+                    </form>
+                </div>
+            }
+            else
+            {
+                <div class="pt-4 mt-3 border-t border-border flex flex-col gap-2">
+                    <a href="/Account/Login" class="w-full py-2.5 text-center text-sm font-medium text-foreground bg-muted/70 hover:bg-muted rounded-custom-sm transition-colors">
+                        Sign In
+                    </a>
+                    <a href="/Account/Register" class="w-full py-2.5 text-center text-sm font-semibold text-white bg-primary hover:opacity-90 rounded-custom-sm shadow-sm transition-all">
+                        Sign Up to CLOUDPULSE
+                    </a>
+                </div>
+            }
+        </div>
+    </header>
+
+    <!-- Main Page Body -->
+    <main role="main" class="flex-1 w-full">
+        @RenderBody()
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-muted/40 border-t border-border mt-auto">
+        <!-- Newsletter Section -->
+        <div class="border-b border-border/80">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+                <div class="bg-card border border-border rounded-custom p-6 sm:p-10 lg:p-12 shadow-sm flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
+                    <div class="max-w-xl">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold mb-3">
+                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                            </svg>
+                            The Pulse Club Experience
+                        </div>
+                        <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-card-foreground">
+                            Elevate your stride with 15% off
+                        </h2>
+                        <p class="mt-2 text-sm sm:text-base text-muted-foreground">
+                            Subscribe for early access to limited sneaker drops, ergonomic lab innovations, and exclusive member discounts delivered straight to your inbox.
+                        </p>
+                    </div>
+
+                    <div class="w-full lg:max-w-md">
+                        <form id="newsletter-form" class="flex flex-col sm:flex-row gap-2.5">
+                            <input type="email" 
+                                   required 
+                                   placeholder="Enter your email address"
+                                   class="flex-1 px-4 py-3 text-sm bg-background border border-border rounded-custom-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary text-foreground placeholder:text-muted-foreground transition-all" />
+                            <button type="submit" 
+                                    class="px-6 py-3 text-sm font-semibold text-white bg-primary hover:opacity-90 active:scale-95 rounded-custom-sm shadow-sm transition-all shrink-0 flex items-center justify-center gap-2 cursor-pointer">
+                                <span>Subscribe</span>
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+                                </svg>
+                            </button>
+                        </form>
+                        <div id="newsletter-success" class="hidden mt-2 text-xs font-medium text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+                            Thank you for subscribing! Your 15% discount code is on its way.
+                        </div>
+                        <p class="mt-2.5 text-[11px] text-muted-foreground">
+                            By joining, you agree to our <a asp-page="/Privacy" class="underline hover:text-foreground">Privacy Policy</a> and consent to receive updates. Unsubscribe anytime.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4-Column Link Grid & Brand Info -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
+                
+                <!-- Brand Column -->
+                <div class="col-span-2 md:col-span-4 lg:col-span-1">
+                    <a asp-page="/Index" class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-custom-sm bg-primary/10 text-primary flex items-center justify-center">
+                            <svg class="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 14l5-5 4 4 7-7" />
+                                <path d="M2 18h20" />
+                            </svg>
+                        </div>
+                        <span class="text-xl font-extrabold tracking-tight text-foreground">
+                            CLOUD<span class="text-primary font-black">PULSE</span>
+                        </span>
+                    </a>
+                    <p class="mt-4 text-sm text-muted-foreground leading-relaxed">
+                        Precision-crafted performance footwear, luxury urban sneakers, and handcrafted leather boots engineered for peak comfort.
+                    </p>
+                    <!-- Social Icons -->
+                    <div class="mt-6 flex items-center gap-3">
+                        <a href="https://instagram.com" target="_blank" rel="noreferrer" class="p-2 rounded-custom-sm bg-muted text-foreground/70 hover:text-primary hover:bg-primary/10 transition-colors" aria-label="Instagram">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                                <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
+                            </svg>
+                        </a>
+                        <a href="https://facebook.com" target="_blank" rel="noreferrer" class="p-2 rounded-custom-sm bg-muted text-foreground/70 hover:text-primary hover:bg-primary/10 transition-colors" aria-label="Facebook">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+                            </svg>
+                        </a>
+                        <a href="https://twitter.com" target="_blank" rel="noreferrer" class="p-2 rounded-custom-sm bg-muted text-foreground/70 hover:text-primary hover:bg-primary/10 transition-colors" aria-label="X (Twitter)">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                            </svg>
+                        </a>
+                        <a href="https://youtube.com" target="_blank" rel="noreferrer" class="p-2 rounded-custom-sm bg-muted text-foreground/70 hover:text-primary hover:bg-primary/10 transition-colors" aria-label="YouTube">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/>
+                                <polygon points="10 15 15 12 10 9 10 15"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Column 1: Footwear Categories -->
+                <div>
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-foreground">Footwear</h3>
+                    <ul class="mt-4 space-y-2.5 text-sm">
+                        <li><a href="/?category=Running" class="text-muted-foreground hover:text-primary transition-colors">Running & Athletic</a></li>
+                        <li><a href="/?category=Sneakers" class="text-muted-foreground hover:text-primary transition-colors">Urban Street Sneakers</a></li>
+                        <li><a href="/?category=Boots" class="text-muted-foreground hover:text-primary transition-colors">Chelsea & Leather Boots</a></li>
+                        <li><a href="/?category=Loafers" class="text-muted-foreground hover:text-primary transition-colors">Handcrafted Loafers</a></li>
+                        <li><a href="/?category=Casual" class="text-muted-foreground hover:text-primary transition-colors">Casual Walking Shoes</a></li>
+                        <li><a asp-page="/Index" class="text-muted-foreground hover:text-primary transition-colors">All Footwear Collection</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 2: Customer Care -->
+                <div>
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-foreground">Customer Care</h3>
+                    <ul class="mt-4 space-y-2.5 text-sm">
+                        <li><a href="#tracking" class="text-muted-foreground hover:text-primary transition-colors">Track Your Order</a></li>
+                        <li><a href="#sizing" class="text-muted-foreground hover:text-primary transition-colors">Sizing & Fit Guide</a></li>
+                        <li><a href="#shoe-care" class="text-muted-foreground hover:text-primary transition-colors">Shoe Care & Cleaning</a></li>
+                        <li><a href="#returns" class="text-muted-foreground hover:text-primary transition-colors">30-Day Wear-Test Returns</a></li>
+                        <li><a href="/contact#faqs" class="text-muted-foreground hover:text-primary transition-colors">Help Center & FAQs</a></li>
+                        <li><a href="/contact" class="text-muted-foreground hover:text-primary transition-colors">Contact Footwear Concierge</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 3: Company -->
+                <div>
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-foreground">Company</h3>
+                    <ul class="mt-4 space-y-2.5 text-sm">
+                        <li><a href="#story" class="text-muted-foreground hover:text-primary transition-colors">Our Innovation Story</a></li>
+                        <li><a href="#sustainability" class="text-muted-foreground hover:text-primary transition-colors">Sustainable Materials</a></li>
+                        <li><a href="#biomechanics" class="text-muted-foreground hover:text-primary transition-colors">Ergonomic Lab</a></li>
+                        <li><a href="#careers" class="text-muted-foreground hover:text-primary transition-colors">Careers <span class="text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-full font-bold ml-1">We're hiring</span></a></li>
+                        <li><a href="#lookbook" class="text-muted-foreground hover:text-primary transition-colors">Lookbook & Editorial</a></li>
+                        <li><a href="#journal" class="text-muted-foreground hover:text-primary transition-colors">The Pulse Journal</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 4: Legal -->
+                <div>
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-foreground">Legal</h3>
+                    <ul class="mt-4 space-y-2.5 text-sm">
+                        <li><a href="#terms" class="text-muted-foreground hover:text-primary transition-colors">Terms of Service</a></li>
+                        <li><a asp-page="/Privacy" class="text-muted-foreground hover:text-primary transition-colors">Privacy Policy</a></li>
+                        <li><a href="#cookies" class="text-muted-foreground hover:text-primary transition-colors">Cookie Preferences</a></li>
+                        <li><a href="#accessibility" class="text-muted-foreground hover:text-primary transition-colors">Accessibility Statement</a></li>
+                        <li><a href="#shipping-policy" class="text-muted-foreground hover:text-primary transition-colors">Shipping & Delivery Policy</a></li>
+                        <li><a href="#authenticity" class="text-muted-foreground hover:text-primary transition-colors">100% Authenticity Guarantee</a></li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Bottom Copyright Bar -->
+        <div class="border-t border-border/80 bg-background/50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="text-xs text-muted-foreground text-center sm:text-left">
+                    &copy; 2026 CLOUDPULSE Footwear Inc. All rights reserved. Precision-crafted footwear engineered for modern agility.
+                </div>
+
+                <!-- Payment Trust Badges (Static SVGs) -->
+                <div class="flex items-center gap-2 text-muted-foreground/70">
+                    <!-- Visa -->
+                    <span class="px-2 py-1 bg-card border border-border rounded text-[10px] font-black tracking-widest text-foreground">VISA</span>
+                    <!-- Mastercard -->
+                    <span class="px-2 py-1 bg-card border border-border rounded text-[10px] font-bold text-foreground flex items-center gap-0.5">
+                        <span class="w-2.5 h-2.5 rounded-full bg-red-500 inline-block opacity-80"></span>
+                        <span class="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block -ml-1.5 opacity-80"></span>
+                    </span>
+                    <!-- Amex -->
+                    <span class="px-2 py-1 bg-card border border-border rounded text-[10px] font-bold text-foreground">AMEX</span>
+                    <!-- Apple Pay -->
+                    <span class="px-2 py-1 bg-card border border-border rounded text-[10px] font-semibold text-foreground">Pay</span>
+                    <!-- PayPal -->
+                    <span class="px-2 py-1 bg-card border border-border rounded text-[10px] font-bold text-foreground">PayPal</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Vanilla JavaScript for Header, Mobile Menu & Theme Interactions -->
+    <script src="~/js/app.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

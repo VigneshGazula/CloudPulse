@@ -1,0 +1,28 @@
+## Visual Studio / VS Code cache & settings
+.vs/
+**/.vs/
+*.user
+*.userosscache
+*.sln.docstates
+.vscode/
+
+## .NET Build outputs
+bin/
+**/bin/
+obj/
+**/obj/
+[Bb]in/
+[Oo]bj/
+
+## Node.js dependencies
+node_modules/
+**/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+## OS files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store

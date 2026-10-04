@@ -1,0 +1,14 @@
+{
+  "name": "cloudpulse-ecommerce-demo",
+  "version": "1.0.0",
+  "description": "ASP.NET Core Razor Pages eCommerce Demo with Tailwind CSS",
+  "scripts": {
+    "build:css": "tailwindcss -i ./Styles/app.css -o ./wwwroot/css/app.css --minify",
+    "watch:css": "tailwindcss -i ./Styles/app.css -o ./wwwroot/css/app.css --watch"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.0.0",
+    "tailwindcss": "^4.0.0"
+  }
+}

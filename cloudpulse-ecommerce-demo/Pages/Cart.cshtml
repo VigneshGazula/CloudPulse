@@ -1,0 +1,405 @@
+@page "/cart"
+@model cloudpulse_ecommerce_demo.Pages.CartModel
+@{
+    ViewData["Title"] = "Your Shopping Cart - CLOUDPULSE";
+}
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-14">
+    
+    <!-- Status Message Alert -->
+    @if (!string.IsNullOrEmpty(Model.StatusMessage))
+    {
+        <div id="cart-toast" class="mb-6 p-4 rounded-custom-sm bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-sm font-semibold flex items-center justify-between shadow-xs">
+            <div class="flex items-center gap-2.5">
+                <svg class="w-5 h-5 text-emerald-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+                <span>@Model.StatusMessage</span>
+            </div>
+            <button type="button" onclick="document.getElementById('cart-toast').remove()" class="text-foreground/50 hover:text-foreground">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+        </div>
+    }
+
+    @if (!Model.CartItems.Any())
+    {
+        <!-- EmptyCart View: EmptyCart.tsx Replica -->
+        <div class="max-w-2xl mx-auto py-16 sm:py-24 text-center">
+            <div class="w-24 h-24 mx-auto rounded-full bg-primary/10 text-primary flex items-center justify-center mb-6 shadow-sm">
+                <svg class="w-12 h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
+                    <path d="M3 6h18"/>
+                    <path d="M16 10a4 4 0 0 1-8 0"/>
+                </svg>
+            </div>
+            <span class="inline-block px-3 py-1 text-xs font-bold uppercase tracking-wider text-primary bg-primary/10 rounded-full mb-3">
+                Cart is currently empty
+            </span>
+            <h1 class="text-3xl sm:text-4xl font-black tracking-tight text-foreground">
+                Your shopping bag is empty
+            </h1>
+            <p class="mt-4 text-base text-muted-foreground max-w-md mx-auto leading-relaxed">
+                Looks like you haven't added any pairs to your cart yet. Explore our handcrafted footwear collection and find your perfect stride.
+            </p>
+            <div class="mt-8">
+                <a asp-page="/Index" class="inline-flex items-center gap-2 px-8 py-3.5 text-base font-semibold text-white bg-primary hover:opacity-90 active:scale-95 rounded-custom shadow-md shadow-primary/20 transition-all">
+                    <span>Continue Shopping</span>
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </a>
+            </div>
+
+            <!-- Empty Cart Trust Points -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-16 pt-10 border-t border-border text-left">
+                <div class="p-4 rounded-custom-sm bg-card border border-border">
+                    <svg class="w-6 h-6 text-primary mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    <h4 class="text-sm font-bold text-foreground">Free Shipping</h4>
+                    <p class="text-xs text-muted-foreground mt-1">On all domestic orders over $50.</p>
+                </div>
+                <div class="p-4 rounded-custom-sm bg-card border border-border">
+                    <svg class="w-6 h-6 text-primary mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                    <h4 class="text-sm font-bold text-foreground">30-Day Guarantee</h4>
+                    <p class="text-xs text-muted-foreground mt-1">Wear-test with free, hassle-free returns.</p>
+                </div>
+                <div class="p-4 rounded-custom-sm bg-card border border-border">
+                    <svg class="w-6 h-6 text-primary mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    <h4 class="text-sm font-bold text-foreground">Secure Checkout</h4>
+                    <p class="text-xs text-muted-foreground mt-1">256-bit bank-grade SSL encryption.</p>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Cart with Items View -->
+        <div class="mb-8">
+            <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
+                Shopping Cart
+            </h1>
+            <p class="text-sm text-muted-foreground mt-1">
+                You have <span class="font-bold text-foreground">@Model.CartItems.Sum(c => c.Quantity)</span> item(s) in your bag
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+            
+            <!-- Left Column: Cart Item List (CartItemList.tsx Replica) -->
+            <div class="lg:col-span-8 space-y-4">
+                
+                <!-- Action Bar -->
+                <div class="flex items-center justify-between pb-3 border-b border-border">
+                    <span class="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                        Items (@Model.CartItems.Count unique)
+                    </span>
+                    <form method="post" asp-page-handler="Clear" onsubmit="return confirm('Are you sure you want to clear your cart?');">
+                        <button type="submit" class="text-xs font-semibold text-muted-foreground hover:text-red-500 transition-colors flex items-center gap-1.5 focus:outline-none">
+                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                            <span>Clear All</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Items Loop (CartItem.tsx Replica) -->
+                <div class="divide-y divide-border rounded-custom bg-card border border-border overflow-hidden shadow-2xs">
+                    @foreach (var item in Model.CartItems)
+                    {
+                        var product = item.Product;
+                        var lineTotal = item.Quantity * (product?.Price ?? 0m);
+
+                        <div class="p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 cart-row" data-item-id="@item.Id">
+                            
+                            <!-- Thumbnail & Title -->
+                            <div class="flex items-center gap-4 w-full sm:w-auto">
+                                <a href="/product/@item.ProductId" class="w-20 h-20 sm:w-24 sm:h-24 rounded-custom-sm overflow-hidden bg-muted border border-border shrink-0 group">
+                                    <img src="@product?.ImageUrl" 
+                                         alt="@product?.Name" 
+                                         class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300" />
+                                </a>
+                                <div class="flex-1 min-w-0">
+                                    @if (!string.IsNullOrEmpty(product?.Category))
+                                    {
+                                        <span class="text-[10px] font-bold uppercase tracking-wider text-primary">
+                                            @product.Category
+                                        </span>
+                                    }
+                                    <h3 class="text-base font-bold text-card-foreground hover:text-primary transition-colors truncate">
+                                        <a href="/product/@item.ProductId">@product?.Name</a>
+                                    </h3>
+                                    <p class="text-xs text-muted-foreground mt-0.5">
+                                        $@((product?.Price ?? 0m).ToString("F2")) each
+                                    </p>
+                                    
+                                    <!-- Mobile Line Total -->
+                                    <div class="sm:hidden mt-2 flex items-center justify-between">
+                                        <span class="text-sm font-black text-foreground">
+                                            $@lineTotal.ToString("F2")
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Controls: Qty Stepper, Line Total, Remove -->
+                            <div class="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto pt-3 sm:pt-0 border-t sm:border-t-0 border-border">
+                                
+                                <!-- Quantity +/- Stepper -->
+                                <div class="inline-flex items-center rounded-custom-sm border border-border bg-background shadow-2xs">
+                                    <!-- Decrement Form -->
+                                    <form method="post" asp-page-handler="UpdateQuantity" class="ajax-qty-form">
+                                        <input type="hidden" name="cartItemId" value="@item.Id" />
+                                        <input type="hidden" name="quantity" value="@(item.Quantity - 1)" />
+                                        <button type="submit" 
+                                                class="w-8 h-8 flex items-center justify-center text-foreground hover:bg-muted active:scale-90 transition-all font-bold focus:outline-none"
+                                                aria-label="Decrease quantity">
+                                            &minus;
+                                        </button>
+                                    </form>
+
+                                    <!-- Qty Display -->
+                                    <span class="w-8 text-center text-xs sm:text-sm font-bold text-foreground">
+                                        @item.Quantity
+                                    </span>
+
+                                    <!-- Increment Form -->
+                                    <form method="post" asp-page-handler="UpdateQuantity" class="ajax-qty-form">
+                                        <input type="hidden" name="cartItemId" value="@item.Id" />
+                                        <input type="hidden" name="quantity" value="@(item.Quantity + 1)" />
+                                        <button type="submit" 
+                                                class="w-8 h-8 flex items-center justify-center text-foreground hover:bg-muted active:scale-90 transition-all font-bold focus:outline-none"
+                                                aria-label="Increase quantity">
+                                            &#43;
+                                        </button>
+                                    </form>
+                                </div>
+
+                                <!-- Desktop Line Total -->
+                                <div class="hidden sm:block text-right min-w-[80px]">
+                                    <span class="text-base font-black text-foreground">
+                                        $@lineTotal.ToString("F2")
+                                    </span>
+                                </div>
+
+                                <!-- Remove Item Button -->
+                                <form method="post" asp-page-handler="Remove" class="ajax-remove-form">
+                                    <input type="hidden" name="cartItemId" value="@item.Id" />
+                                    <button type="submit" 
+                                            class="p-2 text-muted-foreground hover:text-red-500 hover:bg-red-500/10 rounded-custom-sm transition-colors focus:outline-none"
+                                            title="Remove item from cart"
+                                            aria-label="Remove @product?.Name from cart">
+                                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                                    </button>
+                                </form>
+
+                            </div>
+
+                        </div>
+                    }
+                </div>
+
+                <!-- Back to Shop Link -->
+                <div class="pt-2">
+                    <a asp-page="/Index" class="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline">
+                        <span>&larr;</span>
+                        <span>Continue browsing footwear collection</span>
+                    </a>
+                </div>
+
+            </div>
+
+            <!-- Right Column: Order Summary Card (OrderSummary.tsx Replica) -->
+            <div class="lg:col-span-4 space-y-6">
+                
+                <div class="rounded-custom bg-card border border-border p-6 shadow-sm space-y-6 sticky top-24">
+                    <h2 class="text-lg font-bold text-card-foreground tracking-tight pb-3 border-b border-border">
+                        Order Summary
+                    </h2>
+
+                    <!-- Free Shipping Progress Indicator -->
+                    <div class="rounded-custom-sm bg-muted/60 p-4 border border-border/80 space-y-2">
+                        <div class="flex items-center justify-between text-xs font-semibold">
+                            <span class="text-foreground flex items-center gap-1.5">
+                                <svg class="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                                Free Express Shipping
+                            </span>
+                            <span class="text-primary font-bold">
+                                @(Model.Subtotal >= Model.FreeShippingThreshold ? "Unlocked!" : $"${Model.FreeShippingRemaining:F2} away")
+                            </span>
+                        </div>
+                        <!-- Progress Bar Track -->
+                        <div class="w-full bg-border rounded-full h-2 overflow-hidden">
+                            <div class="bg-primary h-2 rounded-full transition-all duration-500 ease-out" style="width: @(Model.FreeShippingProgressPercent)%"></div>
+                        </div>
+                        <p class="text-[11px] text-muted-foreground leading-tight">
+                            @if (Model.Subtotal >= Model.FreeShippingThreshold)
+                            {
+                                <span>🎉 Your order qualifies for <strong>FREE standard express delivery</strong>.</span>
+                            }
+                            else
+                            {
+                                <span>Add <strong>$@Model.FreeShippingRemaining.ToString("F2")</strong> more of styles to unlock free shipping.</span>
+                            }
+                        </p>
+                    </div>
+
+                    <!-- Financial Breakdown -->
+                    <div class="space-y-3 text-sm">
+                        <div class="flex justify-between text-muted-foreground">
+                            <span>Subtotal</span>
+                            <span id="summary-subtotal" class="text-foreground font-semibold">$@Model.Subtotal.ToString("F2")</span>
+                        </div>
+                        <div class="flex justify-between text-muted-foreground">
+                            <span>Estimated Shipping</span>
+                            <span id="summary-shipping" class="text-foreground font-semibold">
+                                @(Model.Shipping == 0 ? "FREE" : $"${Model.Shipping:F2}")
+                            </span>
+                        </div>
+                        <div class="flex justify-between text-muted-foreground">
+                            <span>Estimated Tax (8%)</span>
+                            <span id="summary-tax" class="text-foreground font-semibold">$@Model.EstimatedTax.ToString("F2")</span>
+                        </div>
+                        <div class="pt-3 border-t border-border flex justify-between items-baseline">
+                            <span class="text-base font-extrabold text-foreground">Estimated Total</span>
+                            <span id="summary-total" class="text-2xl font-black text-primary">$@Model.Total.ToString("F2")</span>
+                        </div>
+                    </div>
+
+                    <!-- Checkout Button -->
+                    <button type="button" 
+                            onclick="alert('Demo checkout: Thank you for shopping with CLOUDPULSE! In a production deployment, this proceeds to Stripe / payment gateway.')"
+                            class="w-full py-4 text-base font-bold text-white bg-primary hover:opacity-90 active:scale-95 rounded-custom shadow-md shadow-primary/25 transition-all flex items-center justify-center gap-2 cursor-pointer">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                        <span>Proceed to Checkout</span>
+                    </button>
+
+                    <!-- Trust row -->
+                    <div class="pt-2 text-center text-xs text-muted-foreground space-y-2">
+                        <div class="flex items-center justify-center gap-1.5 text-[11px]">
+                            <svg class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            <span>Bank-grade 256-bit encryption</span>
+                        </div>
+                        <div class="flex items-center justify-center gap-2 text-muted-foreground/60 pt-1">
+                            <span class="px-1.5 py-0.5 bg-background border border-border rounded text-[9px] font-black text-foreground">VISA</span>
+                            <span class="px-1.5 py-0.5 bg-background border border-border rounded text-[9px] font-bold text-foreground">MC</span>
+                            <span class="px-1.5 py-0.5 bg-background border border-border rounded text-[9px] font-bold text-foreground">AMEX</span>
+                            <span class="px-1.5 py-0.5 bg-background border border-border rounded text-[9px] font-semibold text-foreground">Pay</span>
+                            <span class="px-1.5 py-0.5 bg-background border border-border rounded text-[9px] font-bold text-foreground">PayPal</span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    }
+
+    <!-- "You Might Also Like" Recommendations Section: Recommendations.tsx Replica -->
+    @if (Model.Recommendations.Any())
+    {
+        <section class="mt-20 pt-16 border-t border-border">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-primary">Pair Your Stride</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground mt-1">
+                        You Might Also Like
+                    </h2>
+                </div>
+                <a asp-page="/Index" class="text-sm font-semibold text-primary hover:underline flex items-center gap-1">
+                    <span>Explore complete footwear lineup</span>
+                    <span>&rarr;</span>
+                </a>
+            </div>
+
+            <!-- 4-Card Responsive Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                @foreach (var rec in Model.Recommendations)
+                {
+                    <div class="group relative rounded-custom bg-card border border-border overflow-hidden hover:shadow-lg hover:border-primary/40 transition-all flex flex-col justify-between">
+                        <div class="relative overflow-hidden bg-muted aspect-[4/3] w-full">
+                            <a href="/product/@rec.Id" class="block w-full h-full">
+                                <img src="@rec.ImageUrl" 
+                                     alt="@rec.Name" 
+                                     loading="lazy" 
+                                     class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out" />
+                            </a>
+                            @if (!string.IsNullOrEmpty(rec.Category))
+                            {
+                                <span class="absolute top-2.5 left-2.5 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-background/90 backdrop-blur-md border border-border/80 rounded-full text-foreground shadow-2xs">
+                                    @rec.Category
+                                </span>
+                            }
+                        </div>
+                        <div class="p-4 flex flex-col flex-1 justify-between">
+                            <div>
+                                <h3 class="text-sm font-bold text-card-foreground group-hover:text-primary transition-colors line-clamp-1">
+                                    <a href="/product/@rec.Id">@rec.Name</a>
+                                </h3>
+                                <p class="text-xs text-muted-foreground line-clamp-2 mt-1">
+                                    @rec.Description
+                                </p>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-border flex items-center justify-between gap-2">
+                                <span class="text-base font-bold text-foreground">$@rec.Price.ToString("F2")</span>
+                                
+                                <form method="post" asp-page-handler="AddToCart">
+                                    <input type="hidden" name="productId" value="@rec.Id" />
+                                    <button type="submit" 
+                                            class="px-3 py-1.5 text-xs font-semibold text-white bg-primary hover:opacity-90 rounded-custom-sm shadow-2xs transition-all flex items-center gap-1 cursor-pointer">
+                                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                                        <span>Add</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </section>
+    }
+
+</div>
+
+@section Scripts {
+    <script>
+        // Minimal vanilla JS to handle AJAX quantity updates and real-time header cart badge sync
+        document.querySelectorAll('.ajax-qty-form, .ajax-remove-form').forEach(form => {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(form);
+                const actionUrl = form.action || window.location.href;
+
+                try {
+                    const response = await fetch(actionUrl, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        
+                        // Update cart badge in header immediately
+                        const cartBadge = document.querySelector('.cart-badge');
+                        if (cartBadge && data.cartCount !== undefined) {
+                            cartBadge.textContent = data.cartCount;
+                            cartBadge.classList.add('scale-125');
+                            setTimeout(() => cartBadge.classList.remove('scale-125'), 300);
+                        }
+
+                        // If empty or major structural change, reload page
+                        if (data.cartEmpty || form.classList.contains('ajax-remove-form')) {
+                            window.location.reload();
+                            return;
+                        }
+
+                        // Otherwise refresh page seamlessly to update all line totals and summary
+                        window.location.reload();
+                    } else {
+                        form.submit();
+                    }
+                } catch {
+                    form.submit();
+                }
+            });
+        });
+    </script>
+}
