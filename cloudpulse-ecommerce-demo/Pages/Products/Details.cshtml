@@ -340,11 +340,11 @@ else
                     <div>
                         <span class="text-xs font-bold uppercase tracking-wider text-primary">Curated For You</span>
                         <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground mt-1">
-                            You Might Also Like
+                            More in @Model.Product.Category
                         </h2>
                     </div>
-                    <a asp-page="/Index" class="text-sm font-semibold text-primary hover:underline flex items-center gap-1">
-                        <span>View complete catalog</span>
+                    <a asp-page="/Index" asp-route-SelectedCategory="@Model.Product.Category" class="text-sm font-semibold text-primary hover:underline flex items-center gap-1">
+                        <span>View more @Model.Product.Category</span>
                         <span>&rarr;</span>
                     </a>
                 </div>

@@ -47,14 +47,13 @@ public class DetailsModel : PageModel
             return Page();
         }
 
-        // Load 4 related products
+        // Load 4 related products from the same category
         try
         {
             RelatedProducts = await _context.Products
                 .AsNoTracking()
-                .Where(p => p.Id != id)
-                .OrderByDescending(p => p.Category == Product.Category)
-                .ThenBy(p => p.Id)
+                .Where(p => p.Id != id && p.Category == Product.Category)
+                .OrderBy(p => p.Id)
                 .Take(4)
                 .ToListAsync();
         }
@@ -152,8 +151,8 @@ public class DetailsModel : PageModel
             PropertyNameCaseInsensitive = true
         });
 
-        return items?.Where(p => p.Id != id)
-                     .OrderByDescending(p => p.Category == category)
+        return items?.Where(p => p.Id != id && p.Category == category)
+                     .OrderBy(p => p.Id)
                      .Take(4)
                      .ToList() ?? new();
     }

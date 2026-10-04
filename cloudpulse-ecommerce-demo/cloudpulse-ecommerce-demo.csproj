@@ -19,6 +19,12 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="data\products.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
   <Target Name="BuildTailwind" BeforeTargets="Build">
     <Exec Command="cmd.exe /c npx tailwindcss -i ./Styles/app.css -o ./wwwroot/css/app.css" />
   </Target>

@@ -32,6 +32,13 @@ public class IndexModel : PageModel
     [BindProperty(SupportsGet = true)]
     public string? Q { get; set; }
 
+    [BindProperty(SupportsGet = true)]
+    public int PageNumber { get; set; } = 1;
+
+    public int PageSize { get; } = 24;
+    public int TotalProducts { get; set; }
+    public int TotalPages { get; set; }
+
     public int CartItemCount { get; set; }
 
     [TempData]
@@ -49,21 +56,31 @@ public class IndexModel : PageModel
             if (!string.IsNullOrWhiteSpace(SelectedCategory) && !SelectedCategory.Equals("All", StringComparison.OrdinalIgnoreCase))
             {
                 var catLower = SelectedCategory.Trim().ToLower();
-                query = query.Where(p => p.Category != null && p.Category.ToLower() == catLower);
+                query = query.Where(p => p.Category.ToLower() == catLower);
             }
 
             if (!string.IsNullOrWhiteSpace(Q))
             {
                 var term = Q.Trim().ToLower();
-                query = query.Where(p => p.Name.ToLower().Contains(term) || (p.Description != null && p.Description.ToLower().Contains(term)));
+                query = query.Where(p => p.Name.ToLower().Contains(term) 
+                                      || p.Description.ToLower().Contains(term) 
+                                      || p.Category.ToLower().Contains(term));
             }
 
-            Products = await query.OrderBy(p => p.Id).ToListAsync();
+            TotalProducts = await query.CountAsync();
+            TotalPages = Math.Max(1, (int)Math.Ceiling(TotalProducts / (double)PageSize));
+
+            if (PageNumber < 1) PageNumber = 1;
+            if (PageNumber > TotalPages) PageNumber = TotalPages;
+
+            Products = await query.OrderBy(p => p.Id)
+                                  .Skip((PageNumber - 1) * PageSize)
+                                  .Take(PageSize)
+                                  .ToListAsync();
 
             Categories = await _context.Products
                 .AsNoTracking()
-                .Where(p => p.Category != null)
-                .Select(p => p.Category!)
+                .Select(p => p.Category)
                 .Distinct()
                 .OrderBy(c => c)
                 .ToListAsync();
@@ -100,7 +117,7 @@ public class IndexModel : PageModel
             }
         }
 
-        return RedirectToPage(new { SelectedCategory });
+        return RedirectToPage(new { SelectedCategory, PageNumber, Q });
     }
 
     private void LoadFallbackProducts()
@@ -119,20 +136,37 @@ public class IndexModel : PageModel
                 if (items != null)
                 {
                     Categories = items
-                        .Where(p => p.Category != null)
-                        .Select(p => p.Category!)
+                        .Select(p => p.Category)
                         .Distinct()
                         .OrderBy(c => c)
                         .ToList();
 
+                    var filtered = items.AsEnumerable();
+
                     if (!string.IsNullOrWhiteSpace(SelectedCategory) && !SelectedCategory.Equals("All", StringComparison.OrdinalIgnoreCase))
                     {
-                        Products = items.Where(p => p.Category == SelectedCategory).ToList();
+                        var catLower = SelectedCategory.Trim().ToLower();
+                        filtered = filtered.Where(p => p.Category.ToLower() == catLower);
                     }
-                    else
+
+                    if (!string.IsNullOrWhiteSpace(Q))
                     {
-                        Products = items;
+                        var term = Q.Trim().ToLower();
+                        filtered = filtered.Where(p => p.Name.ToLower().Contains(term) 
+                                                    || p.Description.ToLower().Contains(term) 
+                                                    || p.Category.ToLower().Contains(term));
                     }
+
+                    TotalProducts = filtered.Count();
+                    TotalPages = Math.Max(1, (int)Math.Ceiling(TotalProducts / (double)PageSize));
+
+                    if (PageNumber < 1) PageNumber = 1;
+                    if (PageNumber > TotalPages) PageNumber = TotalPages;
+
+                    Products = filtered.OrderBy(p => p.Id)
+                                       .Skip((PageNumber - 1) * PageSize)
+                                       .Take(PageSize)
+                                       .ToList();
                 }
             }
         }
