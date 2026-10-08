@@ -25,8 +25,9 @@
     </None>
   </ItemGroup>
 
-  <Target Name="BuildTailwind" BeforeTargets="Build">
+  <Target Name="BuildTailwind" BeforeTargets="Build" Condition="'$(OS)' == 'Windows_NT' And '$(DOTNET_RUNNING_IN_CONTAINER)' != 'true'">
     <Exec Command="cmd.exe /c npx tailwindcss -i ./Styles/app.css -o ./wwwroot/css/app.css" />
   </Target>
+
 
 </Project>
